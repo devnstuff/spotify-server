@@ -4,7 +4,6 @@ const querystring = require('querystring');
 require('dotenv').config();
 const app = express();
 
-const redirect_uri = process.env.REDIRECT_URI || 'http://localhost:8888/callback';
 const frontend_uri = process.env.FRONTEND_URI || 'http://localhost:8080';
 
 app.get('/login', (req, res) => {
@@ -13,8 +12,8 @@ app.get('/login', (req, res) => {
 			querystring.stringify({
 				response_type: 'code',
 				client_id: process.env.CLIENT_ID,
-				scope: scopes,
-				redirect_uri,
+				scope: process.env.SCOPES,
+				redirect_uri: process.env.REDIRECT_URI,
 			})
 	);
 });
@@ -25,7 +24,7 @@ app.get('/callback', (req, res) => {
 		url: 'https://accounts.spotify.com/api/token',
 		form: {
 			code,
-			redirect_uri,
+			redirect_uri: process.env.REDIRECT_URI,
 			grant_type: 'authorization_code',
 		},
 		headers: {
